@@ -2,7 +2,8 @@
  File: post-service.js
  Author: Tony Hallal
  Date: 11/10/2023
- Description: Contains all services related to likes
+ Description: Contains all services related to likes. Handles sending likes count and
+ likes, adding likes and removing likes.
  **********************************************************************************+*****/
 import {query} from "../database/db.js";
 

@@ -2,7 +2,7 @@
  File: post-service.js
  Author: Tony Hallal
  Date: 11/10/2023
- Description: Contains all services related to posts
+ Description: Contains all services related to posts. Handles CRUD operations for posts.
  **********************************************************************************+*****/
 import {query} from "../database/db.js";
 

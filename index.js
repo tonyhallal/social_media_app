@@ -4,7 +4,6 @@
  Date: 11/10/2023
  Description: Entry point for the API
  ************************************************************************/
-
 import express from "express";
 import cors from "cors";
 import userRouter from "./routes/user.route.js";
@@ -12,13 +11,17 @@ import {config} from "dotenv";
 import postRouter from "./routes/post.route.js";
 import {createServer} from "http";
 import {Server} from "socket.io";
-import {LikeService} from "./services/likes-service.js";
+import {addLike, removeLike, sendLikes} from "./controllers/like-controller.js";
 
 config();
-
 const app = express();
 const server = createServer(app);
-const socket = new Server(server);
+const socket = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST", "PUT", "DELETE"]
+    }
+});
 //parse body to json
 app.use(express.json())
 //cors configuration
@@ -26,22 +29,19 @@ app.use(cors())
 //define routes
 app.use(process.env.APP_BASE_PREFIX, userRouter);
 app.use(process.env.APP_BASE_PREFIX, postRouter);
-
+//realtime connection
 socket.on('connection', (socket) => {
+    //send like count and likes
     socket.on('request_likes', (postId) => {
-        socket.emit('send_likes', LikeService.get(postId))
+        sendLikes(socket, postId);
     })
 
     socket.on('add_like', async (like) => {
-        await LikeService.add(like);
-        const {post_id} = like;
-        socket.emit('send_likes', LikeService.get(post_id))
-    })
+        await addLike(socket, like);
+    });
 
     socket.on('remove_like', async (like) => {
-        const {like_id, post_id} = like;
-        await LikeService.remove(like_id)
-        socket.emit('send_likes', LikeService.get(post_id));
+        await removeLike(socket, like);
     })
 })
 

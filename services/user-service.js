@@ -3,7 +3,7 @@
  Author: Tony Hallal
  Date: 9/10/2023
  Description: this file contains all the services related to the users
- table.
+ table. Handles CRUD operations for users.
  **********************************************************************/
 import {query} from "../database/db.js";
 
