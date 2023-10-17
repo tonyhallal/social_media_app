@@ -31,9 +31,10 @@ app.use(process.env.APP_BASE_PREFIX, userRouter);
 app.use(process.env.APP_BASE_PREFIX, postRouter);
 //realtime connection
 socket.on('connection', (socket) => {
+    console.log('client connected')
     //send like count and likes
-    socket.on('request_likes', (postId) => {
-        sendLikes(socket, postId);
+    socket.on('request_likes', async (postId) => {
+      await sendLikes(socket, postId);
     })
 
     socket.on('add_like', async (like) => {

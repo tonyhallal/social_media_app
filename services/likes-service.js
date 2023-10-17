@@ -13,7 +13,7 @@ const getLikeCount = async (postId) => {
         const sql = `select count(*) as like_count from likes where post_id = ?`
         const [likeCountQuery] = await query(sql, [postId]);
         //return like count property
-        return likeCountQuery[0].like_count;
+        return likeCountQuery.like_count;
     } catch (err) {
         throw new Error(err);
     }
@@ -45,6 +45,7 @@ const get = async (postId) => {
 
 //add like
 const add = async (like) => {
+
     try {
         const sql = `INSERT INTO likes (user_id, post_id)
                         values (?,?)`
