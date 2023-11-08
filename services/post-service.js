@@ -1,12 +1,32 @@
 /****************************************************************************************
  File: post-service.js
  Author: Tony Hallal
- Date: 11/10/2023
+ Date: 4/11/2023
  Description: Contains all services related to posts. Handles CRUD operations for posts.
  **********************************************************************************+*****/
 import {query} from "../database/db.js";
 
-//get posts for the user
+/**
+ *
+ * @param user_id
+ * get all users except the posts of one user. This user will be the logged-in user. This service is used
+ * to display all posts on the home page except the ones for the logged-in user.
+ * @returns {Promise<*|undefined>}
+ */
+const get = async (user_id) => {
+    try {
+        const sql = `SELECT * FROM posts WHERE user_id != ?`;
+        return await query(sql,[user_id])
+    }catch(err) {
+        throw new Error(err);
+    }
+}
+/**
+ *
+ * @param userId
+ * get posts for one user
+ * @returns {Promise<*|undefined>}
+ */
 const findById = async (userId) => {
     try {
         const sql = 'Select * from post where user_id = ?'
@@ -15,8 +35,12 @@ const findById = async (userId) => {
         throw new Error(err)
     }
 }
-
-
+/**
+ *
+ * @param post
+ * add a post
+ * @returns {Promise<*|undefined>}
+ */
 const add = async (post) => {
     try {
         const sql = `insert into post (post_caption, post_attachment, user_id) 
@@ -27,8 +51,13 @@ const add = async (post) => {
         throw new Error(err);
     }
 }
-
-//update post
+/**
+ *
+ * @param postId
+ * @param newPost
+ * update a post
+ * @returns {Promise<*|undefined>}
+ */
 const update = async (postId, newPost) => {
     try {
         const sql = `UPDATE post SET post_caption = ?, post_attachment = ? 
@@ -39,8 +68,12 @@ const update = async (postId, newPost) => {
         throw new Error(err)
     }
 }
-
-//delete post
+/**
+ *
+ * @param postId
+ * delete a post
+ * @returns {Promise<*|undefined>}
+ */
 const remove = async (postId) => {
     try {
         const sql = 'DELETE FROM post where post_id = ?';
@@ -51,6 +84,7 @@ const remove = async (postId) => {
 }
 
 export const PostService = {
+    get,
     findById,
     add,
     update,

@@ -1,49 +1,35 @@
 /****************************************************************************************
  File: post-service.js
  Author: Tony Hallal
- Date: 11/10/2023
+ Date: 4/11/2023
  Description: Contains all services related to likes. Handles sending likes count and
  likes, adding likes and removing likes.
  **********************************************************************************+*****/
 import {query} from "../database/db.js";
 
-//gets the like count
-const getLikeCount = async (postId) => {
+/**
+ *
+ * @param postId
+ * returns like count
+ * @returns {Promise<*>}
+ */
+const get = async (postId) => {
     try {
         const sql = `select count(*) as like_count from likes where post_id = ?`
         const [likeCountQuery] = await query(sql, [postId]);
         //return like count property
-        return likeCountQuery.like_count;
+        const {like_count} = likeCountQuery;
+        return like_count;
     } catch (err) {
         throw new Error(err);
     }
 }
-
-//get likes
-const getLikes = async (postId) => {
-    try {
-        const sql = 'select * from likes where post_id = ?'
-        return await query(sql, [postId]);
-    } catch (err) {
-        throw new Error(err);
-    }
-}
-
-//get likes and like count
-const get = async (postId) => {
-    try {
-        const likeCount = await getLikeCount(postId);
-        const likes = await getLikes(postId);
-        return {
-            likeCount,
-            likes
-        }
-    } catch (err) {
-        throw new Error(err);
-    }
-}
-
-//add like
+/**
+ *
+ * @param like
+ * adds a like
+ * @returns {Promise<*>}
+ */
 const add = async (like) => {
 
     try {
@@ -55,8 +41,12 @@ const add = async (like) => {
         throw new Error(err);
     }
 }
-
-//delete like
+/**
+ *
+ * @param likeId
+ * deletes a like
+ * @returns {Promise<*|undefined>}
+ */
 const remove = async (likeId) => {
     try {
         const sql = `delete from like where like_id = ?`;

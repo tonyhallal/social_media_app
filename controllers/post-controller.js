@@ -8,10 +8,10 @@
 import {PostService} from "../services/post-service.js";
 
 //get posts by user id
-export const findPostsById = async (req, res) => {
+export const findPosts = async (req, res) => {
     try {
         const user_id = req.params.id;
-        res.status(200).send(await PostService.findById(user_id));
+        res.status(200).send(await PostService.get(user_id));
     } catch (err) {
         res.status(500).send(err.message);
     }

@@ -6,37 +6,48 @@
  ****************************************************************************/
 import {LikeService} from "../services/likes-service.js";
 
-//send like count and likes
-export const sendLikes = async (socket, postId) => {
+/**
+ *
+ * @param req
+ * @param res
+ * returns like count.
+ * @returns {Promise<void>}
+ */
+export const getLikes = async (req, res) => {
     try {
-   socket.emit('send_likes', await LikeService.get(postId));
-        }catch(err) {
-        console.log(err.message);
-        socket.emit('error', err.message)
+        const post_id = req.params.id;
+        res.status(200).send(await LikeService.get(post_id));
+    } catch (err) {
+        res.status(404).send('post not found');
     }
 }
-
-//add a like
-export const addLike = async (socket, like) => {
-    try{
-        await LikeService.add(like);
-        const {post_id} = like;
-        await sendLikes(socket, post_id);
-    }catch(err) {
-        console.log(err)
-        socket.emit('error', err.message);
-    }
-
-}
-
-//remove a like
-export const removeLike = async (socket, like) => {
-    try{
-        const {like_id, post_id} = like;
-        await LikeService.remove(like_id)
-        await sendLikes(socket, post_id);
-    }catch(err) {
-        socket.emit('error',err.message);
+/**
+ *
+ * @param req
+ * @param res
+ * add a like to the database.
+ * @returns {Promise<void>}
+ */
+export const addLike = async (req, res) => {
+    try {
+        const {like} = req.body;
+        await res.status(201).send(await LikeService.add(like));
+    } catch (err) {
+        res.status(400).send(err.message);
     }
 }
-
+/**
+ *
+ * @param req
+ * @param res
+ * removes a like.
+ * @returns {Promise<void>}
+ */
+export const removeLike = async (req, res) => {
+    try {
+        const like_id = req.params.id;
+        res.status(200).send(await LikeService.remove(like_id));
+    } catch (err) {
+        res.status(404).send('like not found')
+    }
+}

@@ -5,9 +5,14 @@
  Description: Contains all services related to messages.
  *************************************************************************************************/
 import {query} from "../database/db.js";
-
-//load conversation
-const getMessages = async (senderId, receiverId) => {
+/**
+ *
+ * @param senderId
+ * @param receiverId
+ * loads all messages between two users.
+ * @returns {Promise<*|undefined>}
+ */
+const get = async (senderId, receiverId) => {
     try {
         const sql = `SELECT * from message 
                             WHERE sender_id = ? AND receiver_id = ? 
@@ -17,13 +22,32 @@ const getMessages = async (senderId, receiverId) => {
         throw new Error(err);
     }
 }
-
-//add message
-const addMessage = async (message) => {
-    const { senderId, receiverId, messageContent } = message;
-    const sql = `INSERT INTO message (sender_id, receiver_id, message_content, message_attachment)
-                        values (?,?,?,?) `;
-return await query(sql,[senderId, receiverId, messageContent.textMessage, messageContent.msgAttachment])
+/**
+ *
+ * @param message
+ * adds a message to the database.
+ * @returns {Promise<*|undefined>}
+ */
+const add = async (message) => {
+    try {
+        const {senderId, receiverId, messageContent} = message;
+        const sql = `INSERT INTO message (sender_id, receiver_id, message_content, message_attachment)
+                            values (?,?,?,?) `;
+        return await query(sql, [senderId, receiverId, messageContent.textMessage, messageContent.msgAttachment])
+    } catch (e) {
+        throw new Error(e);
+    }
 }
-
-//TODO: continue delete functionality
+/**
+ *
+ * @param message_id
+ * @returns {Promise<*|undefined>}
+ */
+const remove = async (message_id) => {
+    try {
+        const sql = `delete from message where message_id = ?`;
+        return await query(sql, [message_id])
+    } catch (err) {
+        throw new Error(err);
+    }
+}
