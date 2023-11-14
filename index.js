@@ -6,11 +6,16 @@
  ************************************************************************/
 import express from "express";
 import cors from "cors";
-import userRouter from "./routes/user.route.js";
+import userRouter from "./routes/user.routes.js";
 import {config} from "dotenv";
-import postRouter from "./routes/post.route.js";
+import postRouter from "./routes/post.routes.js";
 import {createServer} from "http";
 import likesRouter from "./routes/likes.routes.js";
+import {useRoutes} from "./helpers/helper.js";
+import commentsRouter from "./routes/comments.routes.js";
+import messageRouter from "./routes/message.routes.js";
+import {Server} from "socket.io";
+import {messageSocketHandler} from "./sockets/messageSocketHandler.js";
 
 config();
 const app = express();
@@ -20,9 +25,13 @@ app.use(express.json())
 //cors configuration
 app.use(cors())
 //define routes
-app.use(process.env.APP_BASE_PREFIX, userRouter);
-app.use(process.env.APP_BASE_PREFIX, postRouter);
-app.use(process.env.APP_BASE_PREFIX, likesRouter);
+useRoutes(app, userRouter, postRouter, likesRouter, commentsRouter, messageRouter);
+
+//realtime handling
+const io = new Server(server);
+io.on('connection', (socket) => {
+    messageSocketHandler(socket);
+})
 
 const port = process.env.APP_PORT;
 server.listen(port, () => {

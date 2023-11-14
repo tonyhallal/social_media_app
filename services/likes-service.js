@@ -8,12 +8,25 @@
 import {query} from "../database/db.js";
 
 /**
+ * get all the likes for all posts
+ * @returns {Promise<*|undefined>}
+ */
+const get = async () => {
+    try{
+        const sql = `SELECT * FROM likes group by post_id`
+        return await query(sql);
+    }catch(err) {
+        throw new Error(err)
+    }
+}
+
+/**
  *
  * @param postId
  * returns like count
  * @returns {Promise<*>}
  */
-const get = async (postId) => {
+const getForOnePost = async (postId) => {
     try {
         const sql = `select count(*) as like_count from likes where post_id = ?`
         const [likeCountQuery] = await query(sql, [postId]);
@@ -58,6 +71,7 @@ const remove = async (likeId) => {
 
 export const LikeService = {
     get,
+    getForOnePost,
     add,
     remove
 }

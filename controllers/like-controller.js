@@ -7,10 +7,9 @@
 import {LikeService} from "../services/likes-service.js";
 
 /**
- *
+ * returns like count.
  * @param req
  * @param res
- * returns like count.
  * @returns {Promise<void>}
  */
 export const getLikes = async (req, res) => {

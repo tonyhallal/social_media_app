@@ -1,5 +1,5 @@
 /*******************************************************************
- File: user.route.js
+ File: user.routes.js
  Author: Tony Hallal
  Date: 11/10/2023
  Description: Routes for posts CRUD operations
