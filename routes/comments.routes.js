@@ -5,13 +5,13 @@
  Description: routes for comments create read and delete operations.
 *********************************************************************************************************************/
 import express from "express";
-import {addComment, deleteComment, findAllComments, findCommentsByPostId} from "../controllers/comments-controller.js";
+import {addComment, deleteComment, findCommentsByPostId} from "../controllers/comments-controller.js";
+import {addCommentValidator} from "../validators/comments-validator.js";
 
 const commentsRouter = express.Router();
 
-commentsRouter.get('/comments', findAllComments);
 commentsRouter.get('/comments/:post_id',findCommentsByPostId);
-commentsRouter.post('/comment',addComment);
+commentsRouter.post('/comment',addCommentValidator, addComment);
 commentsRouter.delete('/comment/:comment_id',deleteComment);
 
 export default commentsRouter;

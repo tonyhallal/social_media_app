@@ -5,6 +5,7 @@
  Description: handles incoming socket events and delegates to likes service.
  ****************************************************************************/
 import {LikeService} from "../services/likes-service.js";
+import {validationResult} from "express-validator";
 
 /**
  * returns like count.
@@ -14,39 +15,51 @@ import {LikeService} from "../services/likes-service.js";
  */
 export const getLikes = async (req, res) => {
     try {
-        const post_id = req.params.id;
-        res.status(200).send(await LikeService.get(post_id));
+        const {post_id} = req.params;
+        res.status(200).send({
+            likeCount: await LikeService.getForOnePost(post_id)
+        })
     } catch (err) {
-        res.status(404).send('post not found');
+        res.status(500).send(err.message);
     }
 }
 /**
- *
+ * add a like to the database.
  * @param req
  * @param res
- * add a like to the database.
  * @returns {Promise<void>}
  */
 export const addLike = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.status(400).json({errors: errors.array()});
+        return;
+    }
+
     try {
-        const {like} = req.body;
-        await res.status(201).send(await LikeService.add(like));
+        const {user_id, post_id} = req.body;
+        await res.status(201).send({
+            dbModification: await LikeService.add(user_id, post_id),
+            message: 'like added successfully'
+        })
     } catch (err) {
         res.status(400).send(err.message);
     }
 }
 /**
- *
+ * removes a like.
  * @param req
  * @param res
- * removes a like.
  * @returns {Promise<void>}
  */
 export const removeLike = async (req, res) => {
     try {
-        const like_id = req.params.id;
-        res.status(200).send(await LikeService.remove(like_id));
+        const {like_id} = req.params;
+        res.status(200).send({
+            dbModification: await LikeService.remove(like_id),
+            message: 'like deleted successfully'
+        });
     } catch (err) {
-        res.status(404).send('like not found')
+        res.status(400).send(err.message)
     }
 }

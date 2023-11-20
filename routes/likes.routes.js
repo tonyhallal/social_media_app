@@ -5,12 +5,13 @@
  Description: Routes for likes create, read and delete operations
  ******************************************************************************/
 import express from "express";
-import {LikeService} from "../services/likes-service.js";
+import {addLike, getLikes, removeLike} from "../controllers/like-controller.js";
+import {addLikeValidator} from "../validators/likes-validator.js";
 
 const likesRouter = express.Router();
 
-likesRouter.get('/likes/:id', LikeService.get);
-likesRouter.post('/like', LikeService.add);
-likesRouter.delete('/like/:id', LikeService.remove);
+likesRouter.get('/likes/:post_id', getLikes);
+likesRouter.post('/like',addLikeValidator, addLike);
+likesRouter.delete('/like/:like_id', removeLike);
 
 export default likesRouter;

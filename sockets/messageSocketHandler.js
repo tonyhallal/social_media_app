@@ -8,8 +8,8 @@ import {MessageService} from "../services/message-service.js";
 import {UserService} from "../services/user-service.js";
 
 /**
- * @param socket
  * Handles realtime messaging. Handles emitting connected users, as well as emitting messages to other users.
+ * @param socket
  * @returns void
  */
 export const messageSocketHandler = (socket) => {

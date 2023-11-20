@@ -20,9 +20,8 @@ const findAll = async () => {
     }
 }
 /**
- *
- * @param id
  * returns one user.
+ * @param id
  * @returns {Promise<*|undefined>}
  */
 const findById = async (id) => {
@@ -35,27 +34,25 @@ const findById = async (id) => {
 }
 /**
  *
- * @param user
  * adds one user. Used for registration.
  * @returns {Promise<*|undefined>}
+ * @param user_username
+ * @param user_first_name
+ * @param user_last_name
+ * @param user_phone_number
+ * @param user_email
+ * @param user_address
+ * @param user_profile_picture
+ * @param user_bio
+ * @param user_password
  */
-const add = async (user) => {
+const add = async (user_username, user_first_name, user_last_name, user_phone_number, user_email, user_address, user_profile_picture, user_bio, user_password) => {
+
     try {
         const sql = `insert into users 
                         (user_username, user_first_name, user_last_name,user_phone_number,user_email,user_address,user_profile_picture,user_bio,user_password)
                         values (?,?,?,?,?,?,?,?,?)`;
 
-        const {
-            user_username,
-            user_first_name,
-            user_last_name,
-            user_phone_number,
-            user_email,
-            user_address,
-            user_profile_picture,
-            user_bio,
-            user_password
-        } = user;
 
         return await query(sql, [user_username, user_first_name, user_last_name, user_phone_number, user_email, user_address, user_profile_picture, user_bio, user_password]);
     } catch (err) {
@@ -64,10 +61,9 @@ const add = async (user) => {
 
 }
 /**
- *
+ * updates a user.
  * @param id - id of the user to be updated
  * @param newUser - the updated info of that user
- * updates a user.
  * @returns {Promise<*|undefined>}
  */
 const update = async (id, newUser) => {
@@ -99,9 +95,8 @@ const update = async (id, newUser) => {
     }
 }
 /**
- *
- * @param id - id of the user to be deleted.
  * deletes a user
+ * @param id - id of the user to be deleted.
  * @returns {Promise<*|undefined>}
  */
 const remove = async (id) => {

@@ -20,8 +20,8 @@ const get = async () => {
 }
 
 /**
- * @param post_id
  * gets all the comments for one post.
+ * @param post_id
  * @returns {Promise<*|undefined>}
  */
 const getForOnePost = async (post_id) => {
@@ -35,14 +35,14 @@ const getForOnePost = async (post_id) => {
 }
 
 /**
- * @param comment
  * adds a comment to the database.
  * @returns {Promise<*|undefined>}
+ * @param user_id
+ * @param post_id
+ * @param comment_content
  */
-const add = async (comment) => {
+const add = async (user_id, post_id, comment_content) => {
     try {
-        //destructure comment object
-        const {user_id, post_id, comment_content} = comment;
         const sql = `INSERT INTO comments (user_id, post_id, comment_content)
                             VALUES (?, ?, ?)`
         return await query(sql, [user_id, post_id, comment_content]);
@@ -52,8 +52,8 @@ const add = async (comment) => {
 }
 
 /**
- * @param comment_id
  * deletes a comment from the database.
+ * @param comment_id
  * @returns {Promise<*|undefined>}
  */
 const remove = async (comment_id) => {

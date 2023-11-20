@@ -6,14 +6,15 @@
  ******************************************************************/
 
 import express from "express";
-import {addPost, deletePost, findPosts, updatePost} from "../controllers/post-controller.js";
-import {insertPostValidation, updatePostValidation} from "../validation/post-validator.js";
+import {addPost, deletePost, findPosts, findPostsForOneUser, updatePost} from "../controllers/post-controller.js";
+import {addPostValidator, updatePostValidator} from "../validators/post-validator.js";
 
 const postRouter = express.Router();
 
-postRouter.get('/posts/:id',findPosts);
-postRouter.post('/post',insertPostValidation,addPost);
-postRouter.put('/post/:id',updatePostValidation,updatePost);
-postRouter.delete('/post/:id',deletePost);
+postRouter.get('/posts/:user_id',findPosts);
+postRouter.get('/posts/for-user-profile/:user_id',findPostsForOneUser)
+postRouter.post('/post',addPostValidator, addPost);
+postRouter.put('/post',updatePostValidator, updatePost);
+postRouter.delete('/post/:post_id',deletePost);
 
 export default postRouter;

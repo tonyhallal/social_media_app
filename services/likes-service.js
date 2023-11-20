@@ -21,9 +21,8 @@ const get = async () => {
 }
 
 /**
- *
- * @param postId
  * returns like count
+ * @param postId
  * @returns {Promise<*>}
  */
 const getForOnePost = async (postId) => {
@@ -38,31 +37,29 @@ const getForOnePost = async (postId) => {
     }
 }
 /**
- *
- * @param like
  * adds a like
+ * @param user_id
+ * @param post_id
  * @returns {Promise<*>}
  */
-const add = async (like) => {
-
+const add = async (user_id, post_id) => {
     try {
         const sql = `INSERT INTO likes (user_id, post_id)
                         values (?,?)`
-        const {user_id, post_id} = like;
+
         return await query(sql, [user_id, post_id]);
     } catch (err) {
         throw new Error(err);
     }
 }
 /**
- *
- * @param likeId
  * deletes a like
+ * @param likeId
  * @returns {Promise<*|undefined>}
  */
 const remove = async (likeId) => {
     try {
-        const sql = `delete from like where like_id = ?`;
+        const sql = `delete from likes where like_id = ?`;
         return await query(sql, [likeId]);
     } catch (err) {
         throw new Error(err);

@@ -11,22 +11,24 @@ import {config} from "dotenv";
 import postRouter from "./routes/post.routes.js";
 import {createServer} from "http";
 import likesRouter from "./routes/likes.routes.js";
-import {useRoutes} from "./helpers/helper.js";
 import commentsRouter from "./routes/comments.routes.js";
 import messageRouter from "./routes/message.routes.js";
 import {Server} from "socket.io";
 import {messageSocketHandler} from "./sockets/messageSocketHandler.js";
+import authRouter from "./routes/auth.routes.js";
 
 config();
 const app = express();
 const server = createServer(app);
-//parse body to json
-app.use(express.json())
-//cors configuration
-app.use(cors())
-//define routes
-useRoutes(app, userRouter, postRouter, likesRouter, commentsRouter, messageRouter);
 
+//parse body to json
+app.use(express.json());
+
+//cors configuration
+app.use(cors());
+
+//define routes
+ app.use(process.env.APP_BASE_PREFIX,userRouter, postRouter, likesRouter, commentsRouter, messageRouter, authRouter);
 //realtime handling
 const io = new Server(server);
 io.on('connection', (socket) => {

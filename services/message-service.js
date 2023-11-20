@@ -10,26 +10,24 @@ import {query} from "../database/db.js";
 const connectedUsers = new Map();
 
 /**
- *
+ * loads all messages between two users.
  * @param senderId
  * @param receiverId
- * loads all messages between two users.
  * @returns {Promise<*|undefined>}
  */
 const getConversation = async (senderId, receiverId) => {
     try {
         const sql = `SELECT * from message 
-                            WHERE sender_id = ? AND receiver_id = ? 
-                            or sender_id = ? and receiver_id = ?`;
+                            WHERE (sender_id = ? AND receiver_id = ?)
+                            or (sender_id = ? and receiver_id = ?)`;
         return await query(sql, [senderId, receiverId, receiverId, senderId]);
     } catch (err) {
         throw new Error(err);
     }
 }
 /**
- *
- * @param message
  * adds a message to the database.
+ * @param message
  * @returns {Promise<*|undefined>}
  */
 const addMessage = async (message) => {
@@ -43,7 +41,7 @@ const addMessage = async (message) => {
     }
 }
 /**
- *
+ * deletes the message with the corresponding id
  * @param message_id
  * @returns {Promise<*|undefined>}
  */
@@ -63,9 +61,9 @@ const removeMessage = async (message_id) => {
 const getConnectedUsers = () => connectedUsers;
 
 /**
- * @param user_id
  * Checks if the user being fetched is connected. Returns a response message of 200 and the connected user's socket id
  * in case of success. Returns an error message of 404 in case of an error.
+ * @param user_id
  * @returns {{res: number}|{res: number, connectedUser: any}}
  */
 const getOneConnectedUser = (user_id) => {
@@ -81,8 +79,8 @@ const getOneConnectedUser = (user_id) => {
 }
 
 /**
- * @param user_id
  * Add a user's socket ID to the connected users Map.
+ * @param user_id
  * @param socketID
  */
 const addUserConnection = (user_id, socketID) => {
@@ -90,9 +88,9 @@ const addUserConnection = (user_id, socketID) => {
 }
 
 /**
- * @param socketID
  * Checks if the user being removed is available. Returns a response message of 201 in case of success. Returns a
  * response message of 404 in case of an error.
+ * @param socketID
  * @return {{res: number}}
  */
 const removeUserConnection = (socketID) => {

@@ -2,9 +2,10 @@
  File: comments-controller.js
  Author: Tony Hallal
  Date: 12/11/2023
- Description: handles request validation for comments and delegates to the comments service.
+ Description: handles request validators for comments and delegates to the comments service.
  *******************************************************************************************************************/
 import {CommentsService} from "../services/comments-service.js";
+import {validationResult} from "express-validator";
 
 /**
  * Finds all the comments. Returns an array of comments if succeeded. Returns an error message in case of failure.
@@ -44,14 +45,19 @@ export const findCommentsByPostId = async (req, res) => {
  * @returns {Promise<void>}
  */
 export const addComment = async (req, res) => {
-    const {comment} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.status(400).json({errors: errors.array()});
+        return;
+    }
+    const {user_id, post_id, comment_content} = req.body;
     try {
-        res.status(201).send(await CommentsService.add(comment));
+        res.status(201).send(await CommentsService.add(user_id, post_id, comment_content));
     } catch (err) {
-        res.status(400).send(`Could not add comment: Missing data.
-                            \n Comment should contain: comment_id, user_id, comment_content`);
+        res.status(400).send(err.message);
     }
 }
+
 /**
  * Validates incoming request by checking if it contains a comment ID. Returns a response describing the database
  * modification in case of success. Returns an error message in case of error.
@@ -60,7 +66,7 @@ export const addComment = async (req, res) => {
  * @returns {Promise<void>}
  */
 export const deleteComment = async (req, res) => {
-    const comment_id = req.params.comment_id;
+    const {comment_id} = req.params;
     try {
         res.status(201).send(await CommentsService.remove(comment_id));
     } catch (err) {

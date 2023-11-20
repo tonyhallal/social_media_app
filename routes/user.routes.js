@@ -6,13 +6,13 @@
 ******************************************************************/
 import {addUser, deleteUser, findAllUsers, findUserById, updateUser} from "../controllers/user-controller.js";
 import express from "express";
-
+import {addUserValidator, updateUserValidator} from "../validators/users-validator.js";
 
 const userRouter = express.Router();
 userRouter.get('/users', findAllUsers);
-userRouter.get('/user/:id', findUserById);
-userRouter.post('/user', addUser);
-userRouter.put('/user/:id', updateUser);
-userRouter.delete('/user/:id', deleteUser);
+userRouter.get('/user/:user_id', findUserById);
+userRouter.post('/user',addUserValidator, addUser);
+userRouter.put('/user', updateUserValidator, updateUser);
+userRouter.delete('/user/:user_id', deleteUser);
 
 export default userRouter;
