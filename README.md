@@ -15,20 +15,20 @@
 
 1. Clone the GitHub repository to your local development environment:
 
-     ```bash 
-git clone https://github.com/tonyhallal/social_media_app.git
-        ```
+    ```bash 
+    git clone https://github.com/tonyhallal/social_media_app.git
+    ```
 
 2. to install all the dependencies, RUN:
 
     ```bash
-npm install
+    npm install
     ```
 
 3. to listen to the API on port 3001, RUN:
 
     ```bash
-npm run dev
+    npm run dev
     ```
 
 
