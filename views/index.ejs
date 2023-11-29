@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+
+    <style>
+        th {
+            background-color: #c5c2c2;
+            border: solid 2px #595959;
+            font-weight: bold;
+            font-size: 1.5rem;
+            padding: 1em;
+            text-align: center;
+        }
+
+        td {
+            background-color: #2d2d2d;
+            color: white;
+            font-weight: bold;
+            padding: .5em;
+            text-align: center;
+            border: solid 2px #595959;
+        }
+    </style>
+</head>
+<body>
+<script>
+    const handleUpdate = (userId) => {
+        window.location.href = `http://localhost:3001/api/v1/user/${userId}`
+    }
+
+    const handleDelete = async (userId) => {
+        await fetch(`http://localhost:3001/api/v1/user/${userId}`, {
+            method: 'DELETE',
+        })
+
+        window.location.reload();
+    }
+</script>
+
+<div class="h-screen flex justify-center items-center">
+    <table>
+        <thead>
+        <tr>
+            <th>username</th>
+            <th>first name</th>
+            <th>last name</th>
+            <th>phone</th>
+            <th>email</th>
+            <th>address</th>
+            <th>update</th>
+            <th>delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% for(const user of users) { %>
+            <tr>
+                <td><%= user.user_username %></td>
+                <td><%= user.user_first_name %></td>
+                <td><%= user.user_last_name %></td>
+                <td><%= user.user_phone_number %></td>
+                <td><%= user.user_email %></td>
+                <td><%= user.user_address %></td>
+                <td>
+                    <button onclick="handleUpdate('<%= user.user_id %>')"
+                            class="p-3 bg-blue-500 hover:opacity-70 duration-300 rounded">update user
+                    </button>
+                </td>
+                <td>
+                    <button onclick="handleDelete('<%= user.user_id %>')"
+                            class="p-3 bg-red-500 hover:opacity-70 duration-300 rounded">delete user
+                    </button>
+                </td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+</html>

@@ -24,3 +24,4 @@ export const isUserAuthenticated = async (username, password) => {
         throw new Error(err);
     }
 }
+

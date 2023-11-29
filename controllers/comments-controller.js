@@ -50,11 +50,12 @@ export const addComment = async (req, res) => {
         res.status(400).json({errors: errors.array()});
         return;
     }
+
     const {user_id, post_id, comment_content} = req.body;
     try {
         res.status(201).send(await CommentsService.add(user_id, post_id, comment_content));
     } catch (err) {
-        res.status(400).send(err.message);
+        res.status(500).send(err.message);
     }
 }
 

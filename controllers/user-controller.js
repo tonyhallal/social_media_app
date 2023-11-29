@@ -15,7 +15,9 @@ import {validationResult} from "express-validator";
  */
 export const findAllUsers = async (req, res) => {
     try {
-        res.status(200).send(await UserService.findAll());
+        const users = await UserService.findAll();
+        //res.status(200).send(await UserService.findAll());
+        res.render('index', {users})
     } catch (err) {
         res.status(500).send(`Error: ${err.message}`);
     }
@@ -38,7 +40,8 @@ export const findUserById = async (req, res) => {
             res.status(404).send(`user with id ${user_id} was not found`);
             return;
         }
-        res.status(200).send(user);
+        //res.status(200).send(user);
+        res.render('user-form', {user});
     } catch (err) {
         res.status(500).send(`Error: ${err.message}`);
     }

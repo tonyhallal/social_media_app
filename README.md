@@ -7,7 +7,6 @@
 
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
--
 
 ## Getting Started
 

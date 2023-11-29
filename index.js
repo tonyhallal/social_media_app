@@ -27,8 +27,12 @@ app.use(express.json());
 //cors configuration
 app.use(cors());
 
+//set view engine
+app.set('view engine', 'ejs');
+app.set('views', './views')
+
 //define routes
- app.use(process.env.APP_BASE_PREFIX,userRouter, postRouter, likesRouter, commentsRouter, messageRouter, authRouter);
+app.use(process.env.APP_BASE_PREFIX, userRouter, postRouter, likesRouter, commentsRouter, messageRouter, authRouter);
 //realtime handling
 const io = new Server(server);
 io.on('connection', (socket) => {
