@@ -23,6 +23,7 @@ const server = createServer(app);
 
 //parse body to json
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 //cors configuration
 app.use(cors());

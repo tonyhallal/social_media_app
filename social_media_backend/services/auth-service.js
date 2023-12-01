@@ -8,7 +8,6 @@ import {query} from "../database/db.js";
 
 /**
  * Checks if the username and password are correct.
- *
  * @param {*} username
  * @param {*} password
  * @return {Promise<boolean>}

@@ -74,8 +74,20 @@ export const addUser = async (req, res) => {
             user_password
         } = req.body;
 
-        res.status(201).send({
-            dbModification: await UserService.add(user_username,
+        // res.status(201).send({
+        //     dbModification: await UserService.add(user_username,
+        //         user_first_name,
+        //         user_last_name,
+        //         user_phone_number,
+        //         user_email,
+        //         user_address,
+        //         user_profile_picture,
+        //         user_bio,
+        //         user_password),
+        //     message: 'User added successfully'
+        // })
+
+        await UserService.add(user_username,
                 user_first_name,
                 user_last_name,
                 user_phone_number,
@@ -83,9 +95,10 @@ export const addUser = async (req, res) => {
                 user_address,
                 user_profile_picture,
                 user_bio,
-                user_password),
-            message: 'User added successfully'
-        })
+                user_password)
+
+        const users = await UserService.findAll();
+        res.render('index', {users})
     } catch (err) {
         res.status(500).send(`Error: ${err.message}`);
 
@@ -99,19 +112,46 @@ export const addUser = async (req, res) => {
  * @return {Promise<void>}
  */
 export const updateUser = async (req, res) => {
+    console.log(req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         res.status(400).json({errors: errors.array()});
         return;
     }
     try {
-        const {user_id, newUser} = req.body;
-        const executeUserUpdate = await UserService.update(user_id, newUser);
+        const {
+            user_id,
+            user_username,
+            user_first_name,
+            user_last_name,
+            user_phone_number,
+            user_email,
+            user_address,
+            user_profile_picture,
+            user_bio,
+            user_password
+        } = req.body;
 
-        res.status(201).send({
-            dbModification: executeUserUpdate,
-            message: 'User updated successfully'
-        });
+        const newUser = {
+            user_username,
+            user_first_name,
+            user_last_name,
+            user_phone_number,
+            user_email,
+            user_address,
+            user_profile_picture,
+            user_bio,
+            user_password
+        }
+        await UserService.update(user_id, newUser);
+
+        const users = await UserService.findAll();
+
+        res.render('index', {users})
+        // res.status(201).send({
+        //   dbModification: executeUserUpdate,
+        // message: 'User updated successfully'
+        //});
     } catch (err) {
         res.status(500).send(`Error: ${err.message}`);
     }
@@ -126,12 +166,30 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
     try {
         const {user_id} = req.params;
-        res.status(200).send({
-            dbModification: await UserService.remove(user_id),
-            message: 'User deleted successfully'
-        });
+        //res.status(200).send({
+        //  dbModification: await UserService.remove(user_id),
+        // message: 'User deleted successfully'
+        //});
+
+        await UserService.remove(user_id);
+        const users = await UserService.findAll();
+        res.render('index', {users})
     } catch (err) {
         res.status(500).send(`Error: ${err.message}`)
     }
 }
 
+export const updateUserForm = async (req, res) => {
+    const {user_id} = req.params;
+    try {
+        const userRes = await UserService.findById(user_id);
+        const user = userRes[0];
+        res.render('update-user-form', {user})
+    } catch (e) {
+        res.status(500).send(e.message)
+    }
+}
+
+export const addUserForm = async (req, res) => {
+    res.render('add-user-form')
+}

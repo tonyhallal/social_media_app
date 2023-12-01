@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+
+    <style>
+        input {
+            border-radius: 10px;
+            background-color: white;
+            width: 30%;
+            margin-inline: auto;
+            border: solid 2px;
+            box-shadow: 0 0 5px grey;
+        }
+
+        input:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+<%- include('partials/navbar')%>
+    <form action="/api/v1/add-user" method="post"
+          class="p-10 rounded-lg bg-white drop-shadow-2xl border border-black flex flex-col items-center gap-y-6">
+        <input type="text" name="user_username" placeholder="enter username" class="p-3">
+        <input type="text" name="user_first_name" placeholder="enter first name" class="p-3">
+        <input type="text" name="user_last_name" placeholder="enter last name" class="p-3">
+        <input type="text" name="user_phone_number" placeholder="enter phone number" class="p-3">
+        <input type="text" name="user_email" placeholder="enter email" class="p-3">
+        <input type="text" name="user_address" placeholder="enter address" class="p-3">
+        <input type="text" name="user_profile_picture" placeholder="dummy path for profile pic...." class="p-3">
+        <input type="text" name="user_bio" placeholder="enter bio" class="p-3">
+        <input type="password" name="user_password" placeholder="enter password" class="p-3">
+        <button type="submit" class="mx-auto p-3 rounded bg-green-500 text-white hover:opacity-70 duration-300">
+            add user
+        </button>
+    </form>
+<%- include('partials/footer')%>
+</body>
+</html>

@@ -29,22 +29,9 @@
     </style>
 </head>
 <body>
-<script>
-    const handleUpdate = (userId) => {
-        window.location.href = `http://localhost:3001/api/v1/user/${userId}`
-    }
-
-    const handleDelete = async (userId) => {
-        await fetch(`http://localhost:3001/api/v1/user/${userId}`, {
-            method: 'DELETE',
-        })
-
-        window.location.reload();
-    }
-</script>
-
-<div class="h-screen flex justify-center items-center">
-    <table>
+<%- include('partials/navbar')%>
+<div class="flex flex-col">
+    <table class="mx-auto">
         <thead>
         <tr>
             <th>username</th>
@@ -53,8 +40,8 @@
             <th>phone</th>
             <th>email</th>
             <th>address</th>
-            <th>update</th>
             <th>delete</th>
+            <th>update</th>
         </tr>
         </thead>
         <tbody>
@@ -67,20 +54,25 @@
                 <td><%= user.user_email %></td>
                 <td><%= user.user_address %></td>
                 <td>
-                    <button onclick="handleUpdate('<%= user.user_id %>')"
-                            class="p-3 bg-blue-500 hover:opacity-70 duration-300 rounded">update user
-                    </button>
+                    <a href="/api/v1/delete-user/<%= user.user_id %>"
+                       class="p-3 bg-red-500 hover:opacity-70 duration-300 rounded">delete user
+                    </a>
                 </td>
-                <td>
-                    <button onclick="handleDelete('<%= user.user_id %>')"
-                            class="p-3 bg-red-500 hover:opacity-70 duration-300 rounded">delete user
-                    </button>
+                <td class="p-7">
+                    <a href="/api/v1/update-user-form/<%= user.user_id %>"
+                       class="p-3 bg-blue-500 hover:opacity-70 duration-300 rounded">update user
+                    </a>
                 </td>
             </tr>
         <% } %>
         </tbody>
     </table>
-</div>
+
+    <a href="/api/v1/add-user-form"
+       class="mt-10 mx-auto bg-green-500 p-3 rounded hover:opacity-70 duration-300 text-white font-bold">add
+        user</a></div>
+
+<%- include('partials/footer')%>
 
 
 </body>
