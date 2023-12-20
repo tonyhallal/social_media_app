@@ -6,6 +6,7 @@
  ***********************************************************************************************************************/
 import {isUserAuthenticated} from "../services/auth-service.js";
 import {validationResult} from "express-validator";
+import {UserService} from "../services/user-service.js";
 
 /**
  * checks if the user is authenticated. Returns an http response accordingly.
@@ -23,7 +24,7 @@ export const authenticateUser = async (req, res) => {
     try {
         const {user_username, user_password} = req.body;
         if (await isUserAuthenticated(user_username, user_password)) {
-            res.sendStatus(200)
+            res.redirect(`/api/v1/posts/${user_username}`)
             return;
         }
         res.sendStatus(401);

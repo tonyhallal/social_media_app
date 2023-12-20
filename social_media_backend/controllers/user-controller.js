@@ -64,41 +64,14 @@ export const addUser = async (req, res) => {
     try {
         const {
             user_username,
-            user_first_name,
-            user_last_name,
-            user_phone_number,
-            user_email,
-            user_address,
-            user_profile_picture,
-            user_bio,
             user_password
         } = req.body;
 
-        // res.status(201).send({
-        //     dbModification: await UserService.add(user_username,
-        //         user_first_name,
-        //         user_last_name,
-        //         user_phone_number,
-        //         user_email,
-        //         user_address,
-        //         user_profile_picture,
-        //         user_bio,
-        //         user_password),
-        //     message: 'User added successfully'
-        // })
 
         await UserService.add(user_username,
-                user_first_name,
-                user_last_name,
-                user_phone_number,
-                user_email,
-                user_address,
-                user_profile_picture,
-                user_bio,
                 user_password)
 
-        const users = await UserService.findAll();
-        res.render('index', {users})
+        res.redirect('/')
     } catch (err) {
         res.status(500).send(`Error: ${err.message}`);
 

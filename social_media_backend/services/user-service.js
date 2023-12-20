@@ -32,29 +32,37 @@ const findById = async (id) => {
         throw new Error(err);
     }
 }
+
+/**
+ * finds the username and user id of the user that has the corresponding username
+ * @param username
+ * @return {Promise<*>}
+ */
+const findByUsername = async (username) => {
+    try {
+        const sql = 'select user_id, user_username from users where user_username = ?';
+        const response = await query(sql, [username]);
+        return response[0];
+    } catch (err) {
+        throw new Error(err);
+    }
+}
 /**
  *
  * adds one user. Used for registration.
  * @returns {Promise<*|undefined>}
  * @param user_username
- * @param user_first_name
- * @param user_last_name
- * @param user_phone_number
- * @param user_email
- * @param user_address
- * @param user_profile_picture
- * @param user_bio
  * @param user_password
  */
-const add = async (user_username, user_first_name, user_last_name, user_phone_number, user_email, user_address, user_profile_picture, user_bio, user_password) => {
+const add = async (user_username, user_password) => {
 
     try {
         const sql = `insert into users 
-                        (user_username, user_first_name, user_last_name,user_phone_number,user_email,user_address,user_profile_picture,user_bio,user_password)
-                        values (?,?,?,?,?,?,?,?,?)`;
+                        (user_username, user_password)
+                        values (?,?)`;
 
 
-        return await query(sql, [user_username, user_first_name, user_last_name, user_phone_number, user_email, user_address, user_profile_picture, user_bio, user_password]);
+        return await query(sql, [user_username, user_password]);
     } catch (err) {
         throw new Error(err);
     }
@@ -69,27 +77,14 @@ const add = async (user_username, user_first_name, user_last_name, user_phone_nu
 const update = async (id, newUser) => {
     const {
         user_username,
-        user_first_name,
-        user_last_name,
-        user_phone_number,
-        user_email,
-        user_address,
-        user_profile_picture,
         user_bio,
         user_password
     } = newUser;
     try {
         const sql = `update users set user_username = ?,
-                        user_first_name = ?,
-                        user_last_name = ?,
-                        user_phone_number = ?,
-                        user_email = ?,
-                        user_address = ?,
-                        user_profile_picture = ?,
-                        user_bio = ?,
                         user_password = ?
                         where user_id = ?`
-        return await query(sql, [user_username, user_first_name, user_last_name, user_phone_number, user_email, user_address, user_profile_picture, user_bio, user_password, id]);
+        return await query(sql, [user_username, user_bio, user_password, id]);
     } catch (err) {
         throw new Error(err);
     }
@@ -112,6 +107,7 @@ const remove = async (id) => {
 export const UserService = {
     findAll,
     findById,
+    findByUsername,
     add,
     update,
     remove

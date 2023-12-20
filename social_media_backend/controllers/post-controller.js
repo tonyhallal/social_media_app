@@ -7,6 +7,7 @@
  **********************************************************************/
 import {PostService} from "../services/post-service.js";
 import {validationResult} from "express-validator";
+import {UserService} from "../services/user-service.js";
 
 /**
  * get all posts except ones for the logged-in user.
@@ -16,8 +17,10 @@ import {validationResult} from "express-validator";
  */
 export const findPosts = async (req, res) => {
     try {
-        const {user_id} = req.params;
-        res.status(200).send(await PostService.get(user_id));
+        const {username} = req.params;
+        const posts = await PostService.get();
+        const user = await UserService.findByUsername(username);
+        res.render('home-page', {posts, user});
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -47,18 +50,19 @@ export const findPostsForOneUser = async (req, res) => {
  * @return {Promise<void>}
  */
 export const addPost = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json({errors: errors.array()});
-        return;
-    }
-
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) {
+    //     res.status(400).json({errors: errors.array()});
+    //     return;
+    // }
     try {
-        const {post_caption, post_attachment, user_id} = req.body;
-        res.status(200).send({
-            dbModification: await PostService.add(post_caption, post_attachment, user_id),
-            message: 'post added successfully'
-        })
+        const {username} = req.params;
+        const {post_caption, user_id} = req.body;
+        console.log('reached')
+        const post_attachment = req.file.buffer;
+
+        await PostService.add(post_caption, post_attachment, user_id)
+        res.redirect(`/api/v1/posts/${username}`)
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -106,4 +110,17 @@ export const deletePost = async (req, res) => {
     } catch (err) {
         res.status(500).send(err.message);
     }
+}
+
+export const findImage = async (req, res) => {
+    try {
+        const {post_id} = req.params;
+        res.status(200).send(await PostService.findImage(post_id));
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
+export const addPostForm = async (req, res) => {
+    res.render('new-post-form')
 }

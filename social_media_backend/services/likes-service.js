@@ -54,13 +54,14 @@ const add = async (user_id, post_id) => {
 }
 /**
  * deletes a like
- * @param likeId
+ * @param userId
+ * @param postId
  * @returns {Promise<*|undefined>}
  */
-const remove = async (likeId) => {
+const remove = async (userId, postId) => {
     try {
-        const sql = `delete from likes where like_id = ?`;
-        return await query(sql, [likeId]);
+        const sql = `delete from likes where user_id = ? and post_id = ?`;
+        return await query(sql, [userId, postId]);
     } catch (err) {
         throw new Error(err);
     }

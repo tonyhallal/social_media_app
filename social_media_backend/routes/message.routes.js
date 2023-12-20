@@ -5,12 +5,11 @@
  Description: Routes for message read and operations.
  ***********************************************************************************************************************/
 import express from "express";
-import {deleteMessage, loadMessages} from "../controllers/message-controller.js";
-import {loadMessagesValidator} from "../validators/message-validator.js";
+import {connectedUsersForMessaging, deleteMessage, loadMessages} from "../controllers/message-controller.js";
 
 const messageRouter = express.Router();
 
-messageRouter.post('/messages',loadMessagesValidator, loadMessages); //handled using POST instead of GET because a body is needed.
+messageRouter.get('/messages/:loggedUser/:user', loadMessages); //handled using POST instead of GET because a body is needed.
 messageRouter.delete('/message/:message_id', deleteMessage);
-
+messageRouter.get('/connected-users', connectedUsersForMessaging);
 export default messageRouter;

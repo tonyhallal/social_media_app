@@ -16,6 +16,7 @@ import messageRouter from "./routes/message.routes.js";
 import {Server} from "socket.io";
 import {messageSocketHandler} from "./sockets/messageSocketHandler.js";
 import authRouter from "./routes/auth.routes.js";
+import mainRouter from "./routes/registration-page.routes.js";
 
 config();
 const app = express();
@@ -31,13 +32,15 @@ app.use(cors());
 //set view engine
 app.set('view engine', 'ejs');
 app.set('views', './views')
+app.use(express.static('public'))
 
 //define routes
 app.use(process.env.APP_BASE_PREFIX, userRouter, postRouter, likesRouter, commentsRouter, messageRouter, authRouter);
+app.use(mainRouter);
 //realtime handling
 const io = new Server(server);
 io.on('connection', (socket) => {
-    messageSocketHandler(socket);
+    messageSocketHandler(io, socket);
 })
 
 const port = process.env.APP_PORT;

@@ -26,7 +26,8 @@ const get = async () => {
  */
 const getForOnePost = async (post_id) => {
     try {
-        const sql = `select * from comments 
+        const sql = `select user_username, comment_content from comments 
+                            join users on comments.user_id = users.user_id
                             where post_id = ?`;
         return await query(sql, [post_id]);
     } catch (err) {

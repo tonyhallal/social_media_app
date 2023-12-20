@@ -11,7 +11,7 @@ import {addLikeValidator} from "../validators/likes-validator.js";
 const likesRouter = express.Router();
 
 likesRouter.get('/likes/:post_id', getLikes);
-likesRouter.post('/like',addLikeValidator, addLike);
-likesRouter.delete('/like/:like_id', removeLike);
+likesRouter.get('/add-like/:user_id/:username/:post_id', addLike);
+likesRouter.get('/remove-like/:user_id/:username/:post_id', removeLike);
 
 export default likesRouter;

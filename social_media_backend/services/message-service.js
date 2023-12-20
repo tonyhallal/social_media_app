@@ -5,22 +5,30 @@
  Description: Contains all services related to messages.
  *************************************************************************************************/
 import {query} from "../database/db.js";
+import {UserService} from "./user-service.js";
 
 //stores connected users' socket IDs
 const connectedUsers = new Map();
 
 /**
  * loads all messages between two users.
- * @param senderId
- * @param receiverId
+ * @param sender
+ * @param receiver
  * @returns {Promise<*|undefined>}
  */
-const getConversation = async (senderId, receiverId) => {
+const getConversation = async (sender, receiver) => {
     try {
-        const sql = `SELECT * from message 
-                            WHERE (sender_id = ? AND receiver_id = ?)
-                            or (sender_id = ? and receiver_id = ?)`;
-        return await query(sql, [senderId, receiverId, receiverId, senderId]);
+        //conversation query
+        const sql = `SELECT message_id, message_content, u1.user_username AS sender, u2.user_username AS receiver
+FROM message m
+JOIN users u1 ON m.sender_id = u1.user_id
+JOIN users u2 ON m.receiver_id = u2.user_id
+WHERE (u1.user_username = ? AND u2.user_username = ?)
+   OR (u1.user_username = ? AND u2.user_username = ?)
+   order by message_id
+   `;
+        //execute the query
+        return await query(sql, [sender, receiver, receiver, sender]);
     } catch (err) {
         throw new Error(err);
     }
@@ -30,14 +38,17 @@ const getConversation = async (senderId, receiverId) => {
  * @param message
  * @returns {Promise<*|undefined>}
  */
-const addMessage = async (message) => {
+const addMessage = async (sender, receiver, message) => {
     try {
-        const {senderId, receiverId, messageContent} = message;
-        const sql = `INSERT INTO message (sender_id, receiver_id, message_content, message_attachment)
-                            values (?,?,?,?) `;
-        return await query(sql, [senderId, receiverId, messageContent.textMessage, messageContent.msgAttachment])
+        const senderQuery = await UserService.findByUsername(sender)
+        const receiverQuery = await UserService.findByUsername(receiver)
+        const senderId = senderQuery.user_id
+        const receiverId = receiverQuery.user_id
+        const sql = `INSERT INTO message (sender_id, receiver_id, message_content)
+                            values (?,?,?) `;
+        return await query(sql, [senderId, receiverId, message])
     } catch (e) {
-        throw new Error(e);
+        console.log(e.message);
     }
 }
 /**
@@ -55,36 +66,26 @@ const removeMessage = async (message_id) => {
 }
 
 /**
- * Returns all the connected users
- * @returns {Map<any, any>}
+ * returns all the connected users
+ * @return {any[]}
  */
-const getConnectedUsers = () => connectedUsers;
+const getConnectedUsers = () => [...connectedUsers.keys()]
 
 /**
  * Checks if the user being fetched is connected. Returns a response message of 200 and the connected user's socket id
  * in case of success. Returns an error message of 404 in case of an error.
- * @param user_id
+ * @param user_username
  * @returns {{res: number}|{res: number, connectedUser: any}}
  */
-const getOneConnectedUser = (user_id) => {
-    if (!connectedUsers.has(user_id)) {
-        return {
-            res: 404,
-        }
-    }
-    return {
-        res: 200,
-        connectedUser: connectedUsers.get(user_id)
-    }
-}
+const getOneConnectedUser = (user_username) => connectedUsers.get(user_username);
 
 /**
  * Add a user's socket ID to the connected users Map.
- * @param user_id
+ * @param user_username
  * @param socketID
  */
-const addUserConnection = (user_id, socketID) => {
-    connectedUsers.set(user_id, socketID);
+const addUserConnection = (user_username, socketID) => {
+    connectedUsers.set(user_username, socketID);
 }
 
 /**
@@ -94,10 +95,9 @@ const addUserConnection = (user_id, socketID) => {
  * @return {{res: number}}
  */
 const removeUserConnection = (socketID) => {
-    let isUserAvailable = false;
     for (let [key] of connectedUsers.entries()) {
         if (connectedUsers.get(key) === socketID) {
-            isUserAvailable = true;
+           connectedUsers.delete(key)
             break;
         }
     }

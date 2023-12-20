@@ -37,11 +37,9 @@ export const addLike = async (req, res) => {
     }
 
     try {
-        const {user_id, post_id} = req.body;
-        await res.status(201).send({
-            dbModification: await LikeService.add(user_id, post_id),
-            message: 'like added successfully'
-        })
+        const {user_id, username, post_id} = req.params;
+        await LikeService.add(user_id, post_id);
+        res.redirect(`/api/v1/posts/${username}`)
     } catch (err) {
         res.status(400).send(err.message);
     }
@@ -54,11 +52,10 @@ export const addLike = async (req, res) => {
  */
 export const removeLike = async (req, res) => {
     try {
-        const {like_id} = req.params;
-        res.status(200).send({
-            dbModification: await LikeService.remove(like_id),
-            message: 'like deleted successfully'
-        });
+        const {user_id, username, post_id} = req.params;
+
+        await LikeService.remove(user_id, post_id)
+        res.redirect(`/api/v1/posts/${username}`)
     } catch (err) {
         res.status(400).send(err.message)
     }

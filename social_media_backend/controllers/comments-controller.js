@@ -31,7 +31,8 @@ export const findAllComments = async (req, res) => {
 export const findCommentsByPostId = async (req, res) => {
     const post_id = req.params.post_id;
     try {
-        res.status(200).send(await CommentsService.getForOnePost(post_id));
+        const comments = await CommentsService.getForOnePost(post_id);
+        res.render(`comments`, { comments, post_id });
     } catch (err) {
         return res.status(404).send({errorMessage: `post id with id: ${post_id} not found.`})
     }
@@ -53,7 +54,8 @@ export const addComment = async (req, res) => {
 
     const {user_id, post_id, comment_content} = req.body;
     try {
-        res.status(201).send(await CommentsService.add(user_id, post_id, comment_content));
+        await CommentsService.add(user_id, post_id, comment_content);
+        res.redirect(`/api/v1/comments/${post_id}`);
     } catch (err) {
         res.status(500).send(err.message);
     }

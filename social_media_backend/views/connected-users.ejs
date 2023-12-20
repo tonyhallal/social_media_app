@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body>
+<%- include('partials/navbar') %>
+<div class="flex flex-col" id="users-container">
+</div>
+<script>
+    const usersContainer = document.getElementById('users-container');
+
+    const ws = io('http://localhost:3001'); //create a client socket
+    ws.on('connect', () => {
+        //register the client
+        ws.emit('connect_for_messaging', {
+            user_username: loggedUser,
+            socketId: ws.id
+        })
+    })
+
+    ws.on('connected_users', (users) => {
+        usersContainer.innerHTML = ''
+        //filter out the current user
+        const otherUsers = users.filter(user => user !== loggedUser);
+        //render connected users
+        otherUsers.forEach((user, index) => {
+            const userElement = document.createElement('a');
+            userElement.href = `/api/v1/messages/${loggedUser}/${user}`
+            if (index === 0) {
+                userElement.classList.add('border-t', 'border-t-black');
+            }
+            userElement.classList.add('w-full', 'p-3', 'border-b', 'border-b-black', 'cursor-pointer', 'hover:bg-blue-500', 'hover:text-white', 'duration-300', 'text-2xl', 'text-center')
+            userElement.textContent = user;
+            usersContainer.appendChild(userElement);
+        })
+    })
+</script>
+</body>
+</html>

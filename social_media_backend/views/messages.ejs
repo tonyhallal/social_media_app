@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <style>
+        .w-max-content {
+            width: max-content;
+        }
+    </style>
+</head>
+<body>
+<div class="w-screen py-4 px-12 grid grid-cols-3 bg-blue-500">
+    <a href="/api/v1/connected-users" class="fa fa-arrow-left text-white text-4xl font-bold cursor-pointer self-center"></a>
+    <h1 class="text-white text-2xl font-bold self-center justify-self-center"><%= user %></h1>
+</div>
+<div class="flex flex-col gap-y-4 mt-4 overflow-y-auto" id="messages-container">
+    <% for (const message of conversation) {
+    if (message.sender === user) { %>
+        <div class="w-max-content self-start px-4 py-2 rounded-xl bg-gray-300"><%= message.message_content %></div>
+    <% } else { %>
+        <div class="w-max-content self-end px-4 py-2 rounded-xl bg-blue-500 text-white"><%= message.message_content %></div>
+    <% } %>
+    <% } %>
+</div>
+
+<div class="fixed bottom-0 rounded-full w-full border border-black bg-white">
+    <div class="flex z-10">
+        <input type="text" class="bg-transparent border-none focus:outline-none p-3 w-[85%]" id="message_content"
+               placeholder="Type here...">
+
+        <button id="send-message"
+                class="py-3 bg-blue-500 cursor-pointer hover:opacity-70 duration-300 rounded-r-full text-white font-bold text-xl w-[15%]">
+            Send message
+        </button>
+    </div>
+</div>
+<script>
+    const loggedUser = localStorage.getItem('username');
+    const messageContainer = document.getElementById('messages-container');
+    const ws = io('http://localhost:3001');
+    ws.on('connect', (socket) => {
+        //register the client
+        ws.emit('connect_for_messaging', {
+            user_username: loggedUser,
+            socketId: ws.id
+        })
+    })
+
+    document.getElementById('send-message').onclick = () => {
+        const messageInput = document.getElementById('message_content');
+        ws.emit('send_message', {
+            sender: loggedUser,
+            receiver: "<%= user %>",
+            message: messageInput.value
+        })
+        const newMessage = document.createElement('div');
+        newMessage.textContent = messageInput.value;
+        messageInput.value = '';
+        newMessage.classList.add("w-max-content", "self-end", "px-4", "py-2", "rounded-xl", "bg-blue-500", "text-white")
+        messageContainer.appendChild(newMessage);
+    }
+
+    ws.on('receive_message', (message) => {
+        const newMessage = document.createElement('div');
+        newMessage.textContent = message;
+        newMessage.classList.add("w-max-content", "self-start", "px-4", "py-2", "rounded-xl", "bg-gray-300", "text-white")
+        messageContainer.appendChild(newMessage);
+    })
+</script>
+</body>
+</html>
