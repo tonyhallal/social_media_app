@@ -18,7 +18,8 @@ const get = async () => {
         let sql = `SELECT user_username, post_id, post_caption FROM post
                           INNER JOIN users ON post.user_id = users.user_id`;
         const posts = await query(sql);
-        //fetch likes
+
+        //fetch likes (did not use likes service so that each entity stays as separated as possible from the other)
         sql = 'select * from likes';
         const likes = await query(sql);
 
@@ -51,36 +52,8 @@ const findImage = async (post_id) => {
         throw new Error(err.message);
     }
 }
-/**
- * get posts for one user
- * @param userId
- * @returns {Promise<*|undefined>}
- */
-const findById = async (userId) => {
-    try {
-        let sql = 'Select * from post where user_id = ?'
-        const posts = await query(sql, [userId]);
 
-        sql = 'select * from likes';
-        const likes = await query(sql);
 
-        sql = 'select * from comments';
-        const comments = await query(sql);
-
-        return posts.map(post => {
-            const likesForOnePost = likes.filter(like => like.post_id === post.post_id);
-            const commentsForOnePost = comments.filter(comment => comment.post_id === post.post_id);
-
-            return {
-                post,
-                likes: likesForOnePost.length,
-                comments: commentsForOnePost
-            }
-        })
-    } catch (err) {
-        throw new Error(err)
-    }
-}
 /**
  * add a post
  * @param post_caption
@@ -99,41 +72,10 @@ const add = async (post_caption, post_attachment, user_id) => {
         throw new Error(err);
     }
 }
-/**
- * update a post
- * @param postId
- * @param newPost
- * @returns {Promise<*|undefined>}
- */
-const update = async (postId, newPost) => {
-    try {
-        const sql = `UPDATE post SET post_caption = ?, post_attachment = ? 
-                            WHERE post_id = ?`;
-        const {post_caption, post_attachment} = newPost;
-        return await query(sql, [post_caption, post_attachment, postId]);
-    } catch (err) {
-        throw new Error(err)
-    }
-}
-/**
- * delete a post
- * @param postId
- * @returns {Promise<*|undefined>}
- */
-const remove = async (postId) => {
-    try {
-        const sql = 'DELETE FROM post where post_id = ?';
-        return await query(sql, [postId]);
-    } catch (err) {
-        throw new Error(err);
-    }
-}
+
 
 export const PostService = {
     get,
-    findById,
     add,
-    update,
-    remove,
     findImage
 }

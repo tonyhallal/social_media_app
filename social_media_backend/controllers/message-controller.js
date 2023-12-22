@@ -25,25 +25,6 @@ export const loadMessages = async (req, res) => {
 }
 
 /**
- * Handles message deletion. Returns a description of the database altering in case of success. Returns an error message
- * @param req
- *@param res
- * in case of an error.
- * @return {Promise<void>}
- */
-export const deleteMessage = async (req, res) => {
-    try {
-        const {message_id} = req.params;
-        res.status(201).send({
-            dbModification: await MessageService.removeMessage(message_id),
-            message: 'message deleted successfully'
-        });
-    } catch (err) {
-        res.status(500).send(`was not able to delete message. \n ${err.message}`);
-    }
-}
-
-/**
  * renders the connected users page
  * @param req
  * @param res

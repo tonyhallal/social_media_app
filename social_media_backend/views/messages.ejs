@@ -39,7 +39,7 @@
 
         <button id="send-message"
                 class="py-3 bg-blue-500 cursor-pointer hover:opacity-70 duration-300 rounded-r-full text-white font-bold text-xl w-[15%]">
-            Send message
+            Send
         </button>
     </div>
 </div>
@@ -72,7 +72,7 @@
     ws.on('receive_message', (message) => {
         const newMessage = document.createElement('div');
         newMessage.textContent = message;
-        newMessage.classList.add("w-max-content", "self-start", "px-4", "py-2", "rounded-xl", "bg-gray-300", "text-white")
+        newMessage.classList.add("w-max-content", "self-start", "px-4", "py-2", "rounded-xl", "bg-gray-300")
         messageContainer.appendChild(newMessage);
     })
 </script>

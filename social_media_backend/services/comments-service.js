@@ -7,19 +7,6 @@
 import {query} from "../database/db.js";
 
 /**
- * gets all the comments for all the posts
- * @returns {Promise<*|undefined>}
- */
-const get = async () => {
-    try {
-        const sql = `select * from comments group by post_id`;
-        return await query(sql);
-    } catch (err) {
-        throw new Error(err);
-    }
-}
-
-/**
  * gets all the comments for one post.
  * @param post_id
  * @returns {Promise<*|undefined>}
@@ -52,24 +39,8 @@ const add = async (user_id, post_id, comment_content) => {
     }
 }
 
-/**
- * deletes a comment from the database.
- * @param comment_id
- * @returns {Promise<*|undefined>}
- */
-const remove = async (comment_id) => {
-    try {
-        const sql = `DELETE FROM comments
-                            WHERE comment_id = ?`;
-        return await query(sql, [comment_id]);
-    } catch (err) {
-        throw new Error(err);
-    }
-}
-
 export const CommentsService = {
-    get,
     getForOnePost,
     add,
-    remove
+
 }

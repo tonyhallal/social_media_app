@@ -20,13 +20,13 @@ const getConversation = async (sender, receiver) => {
     try {
         //conversation query
         const sql = `SELECT message_id, message_content, u1.user_username AS sender, u2.user_username AS receiver
-FROM message m
-JOIN users u1 ON m.sender_id = u1.user_id
-JOIN users u2 ON m.receiver_id = u2.user_id
-WHERE (u1.user_username = ? AND u2.user_username = ?)
-   OR (u1.user_username = ? AND u2.user_username = ?)
-   order by message_id
-   `;
+                            FROM message m
+                            JOIN users u1 ON m.sender_id = u1.user_id
+                            JOIN users u2 ON m.receiver_id = u2.user_id
+                            WHERE (u1.user_username = ? AND u2.user_username = ?)
+                               OR (u1.user_username = ? AND u2.user_username = ?)
+                               order by message_id`;
+
         //execute the query
         return await query(sql, [sender, receiver, receiver, sender]);
     } catch (err) {
@@ -49,19 +49,6 @@ const addMessage = async (sender, receiver, message) => {
         return await query(sql, [senderId, receiverId, message])
     } catch (e) {
         console.log(e.message);
-    }
-}
-/**
- * deletes the message with the corresponding id
- * @param message_id
- * @returns {Promise<*|undefined>}
- */
-const removeMessage = async (message_id) => {
-    try {
-        const sql = `delete from message where message_id = ?`;
-        return await query(sql, [message_id])
-    } catch (err) {
-        throw new Error(err);
     }
 }
 
@@ -97,7 +84,7 @@ const addUserConnection = (user_username, socketID) => {
 const removeUserConnection = (socketID) => {
     for (let [key] of connectedUsers.entries()) {
         if (connectedUsers.get(key) === socketID) {
-           connectedUsers.delete(key)
+            connectedUsers.delete(key)
             break;
         }
     }
@@ -106,7 +93,6 @@ const removeUserConnection = (socketID) => {
 export const MessageService = {
     getConversation,
     addMessage,
-    removeMessage,
     getConnectedUsers,
     getOneConnectedUser,
     addUserConnection,

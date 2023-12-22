@@ -6,7 +6,6 @@
  ******************************************************************************/
 import express from "express";
 import {addLike, getLikes, removeLike} from "../controllers/like-controller.js";
-import {addLikeValidator} from "../validators/likes-validator.js";
 
 const likesRouter = express.Router();
 

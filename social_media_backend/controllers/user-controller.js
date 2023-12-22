@@ -8,47 +8,6 @@ import {UserService} from "../services/user-service.js";
 import {validationResult} from "express-validator";
 
 /**
- * finds all the users. Returns an array of users in case of success. Returns an error message in case of an error.
- * @param req
- * @param res
- * @return {Promise<void>}
- */
-export const findAllUsers = async (req, res) => {
-    try {
-        const users = await UserService.findAll();
-        //res.status(200).send(await UserService.findAll());
-        res.render('index', {users})
-    } catch (err) {
-        res.status(500).send(`Error: ${err.message}`);
-    }
-}
-
-
-/**
- * finds one user by his id. returns a success message and a description of the database modification. Returns an error
- * message in case of an error
- * @param req
- * @param res
- * @return {Promise<void>}
- */
-export const findUserById = async (req, res) => {
-    try {
-        const {user_id} = req.params;
-        const [user] = await UserService.findById(user_id);
-        //check if user is found
-        if (!user) {
-            res.status(404).send(`user with id ${user_id} was not found`);
-            return;
-        }
-        //res.status(200).send(user);
-        res.render('user-form', {user});
-    } catch (err) {
-        res.status(500).send(`Error: ${err.message}`);
-    }
-}
-
-
-/**
  * adds a user
  * @param req
  * @param res
@@ -62,107 +21,13 @@ export const addUser = async (req, res) => {
     }
 
     try {
-        const {
-            user_username,
-            user_password
-        } = req.body;
+        const {user_username, user_password} = req.body;
+        await UserService.add(user_username, user_password)
 
-
-        await UserService.add(user_username,
-                user_password)
-
-        res.redirect('/')
-    } catch (err) {
-        res.status(500).send(`Error: ${err.message}`);
-
-    }
-}
-
-/**
- * updates a user' info
- * @param req
- * @param res
- * @return {Promise<void>}
- */
-export const updateUser = async (req, res) => {
-    console.log(req.body);
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json({errors: errors.array()});
-        return;
-    }
-    try {
-        const {
-            user_id,
-            user_username,
-            user_first_name,
-            user_last_name,
-            user_phone_number,
-            user_email,
-            user_address,
-            user_profile_picture,
-            user_bio,
-            user_password
-        } = req.body;
-
-        const newUser = {
-            user_username,
-            user_first_name,
-            user_last_name,
-            user_phone_number,
-            user_email,
-            user_address,
-            user_profile_picture,
-            user_bio,
-            user_password
-        }
-        await UserService.update(user_id, newUser);
-
-        const users = await UserService.findAll();
-
-        res.render('index', {users})
-        // res.status(201).send({
-        //   dbModification: executeUserUpdate,
-        // message: 'User updated successfully'
-        //});
+        res.redirect('/');
     } catch (err) {
         res.status(500).send(`Error: ${err.message}`);
     }
 }
 
-/**
- * delete a user by id
- * @param req
- * @param res
- * @return {Promise<void>}
- */
-export const deleteUser = async (req, res) => {
-    try {
-        const {user_id} = req.params;
-        //res.status(200).send({
-        //  dbModification: await UserService.remove(user_id),
-        // message: 'User deleted successfully'
-        //});
 
-        await UserService.remove(user_id);
-        const users = await UserService.findAll();
-        res.render('index', {users})
-    } catch (err) {
-        res.status(500).send(`Error: ${err.message}`)
-    }
-}
-
-export const updateUserForm = async (req, res) => {
-    const {user_id} = req.params;
-    try {
-        const userRes = await UserService.findById(user_id);
-        const user = userRes[0];
-        res.render('update-user-form', {user})
-    } catch (e) {
-        res.status(500).send(e.message)
-    }
-}
-
-export const addUserForm = async (req, res) => {
-    res.render('add-user-form')
-}

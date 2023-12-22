@@ -8,20 +8,6 @@ import {CommentsService} from "../services/comments-service.js";
 import {validationResult} from "express-validator";
 
 /**
- * Finds all the comments. Returns an array of comments if succeeded. Returns an error message in case of failure.
- * @param req
- * @param res
- * @returns {Promise<void>}
- */
-export const findAllComments = async (req, res) => {
-    try {
-        res.status(200).send(await CommentsService.get());
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-}
-
-/**
  * Validates the request by checking if the request is sent with a post ID. Finds all the comments for one post.
  * Returns an array of comments if succeeded. Returns an error message in case of failure.
  * @param req
@@ -58,21 +44,5 @@ export const addComment = async (req, res) => {
         res.redirect(`/api/v1/comments/${post_id}`);
     } catch (err) {
         res.status(500).send(err.message);
-    }
-}
-
-/**
- * Validates incoming request by checking if it contains a comment ID. Returns a response describing the database
- * modification in case of success. Returns an error message in case of error.
- * @param req
- * @param res
- * @returns {Promise<void>}
- */
-export const deleteComment = async (req, res) => {
-    const {comment_id} = req.params;
-    try {
-        res.status(201).send(await CommentsService.remove(comment_id));
-    } catch (err) {
-        res.status(400).send(err.message);
     }
 }

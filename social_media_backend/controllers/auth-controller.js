@@ -6,7 +6,6 @@
  ***********************************************************************************************************************/
 import {isUserAuthenticated} from "../services/auth-service.js";
 import {validationResult} from "express-validator";
-import {UserService} from "../services/user-service.js";
 
 /**
  * checks if the user is authenticated. Returns an http response accordingly.
